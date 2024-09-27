@@ -26,6 +26,7 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
+          set -x
           changed=$(echo $ALL_CHANGED_FILES | sort | uniq )
           changed_values=$(echo "$changed" | grep "values.yaml")
           changed_charts=$(echo "$changed" | grep "templates" | cut -d '/' -f1 | sort | uniq)
