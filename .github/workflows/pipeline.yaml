@@ -35,9 +35,9 @@ jobs:
             chart=$(echo $item | cut -d '/' -f1)
             old_chart_version=$(yq '.version' $chart/Chart.yaml)
             new_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
-            yq -i ".version = $new_version" $chart/Chart.yaml
-            image_tag=$(yq .image.tag $item)
-            yq -i ".appVersion = "$image_tag" $chart/Chart.yaml
+            yq -i ".version = \"$new_version\"" $chart/Chart.yaml
+            image_tag = $(yq .image.tag $item)
+            yq -i ".appVersion = \"$image_tag\"" $chart/Chart.yaml
 
             if [ -z $(echo "$changed_charts" | grep $chart) ]; then
               helm package $chart
@@ -47,7 +47,7 @@ jobs:
           for item in ${changed_charts}; do
             old_chart_version=$(yq '.version' $item/Chart.yaml)
             new_chart_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.)
-            yq -i ".version = $new_chart_version" $chart/Chart.yaml
+            yq -i ".version = \"$new_chart_version\"" $chart/Chart.yaml
             helm package $chart
           done
           helm repo index --merge index.yaml
