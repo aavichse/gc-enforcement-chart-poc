@@ -26,21 +26,29 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          changed_charts=$(echo $ALL_CHANGED_FILES | cut -d '/' -f1 | sort | uniq )
-          for item in ${changed}; do
+          changed=$(echo $ALL_CHANGED_FILES | sort | uniq )
+          changed_values=$(echo "$changed" | grep "values.yaml")
+          changed_charts=$(echo "$changed" | grep "templates" | cut -d '/' -f1 | sort | uniq)
+
+          for item in ${changed_values}; do
             chart=$(echo $item | cut -d '/' -f1)
             old_chart_version=$(yq '.version' $chart/Chart.yaml)
-            if [[  $item =~ "values.yaml" ]]; then
-              yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$NF++;print}' OFS=.) $chart/Chart.yaml
-              image_tag = $(yq .images.tag $item)
-              yq -i '.appVersion' = $image.tag $chart/Chart.yaml
-            fi 
-            if [[ $item =~ "templates" ]]; then
-              yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.) $chart/Chart.yaml
+            yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$NF++;print}' OFS=.) $chart/Chart.yaml
+            image_tag = $(yq .images.tag $item)
+            yq -i '.appVersion' = $image.tag $chart/Chart.yaml
+
+            if [ -z $(echo "$changed_charts" | grep $chart) ];
+              helm package $chart
             fi
-            helm package $chart
-          helm repo index --merge index.yaml
           done
 
-
-
+          for item in ${changed_charts}; do
+            old_chart_version=$(yq '.version' $item/Chart.yaml)
+            yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.) $chart/Chart.yaml
+            helm package $chart
+          done
+          helm repo index --merge index.yaml
+          git config --global user.name 'github actions'
+          git config --global user.email 'gha@users.noreply.github.com'
+          git commit -am "Updated charts appversion & versoin"
+          git push
