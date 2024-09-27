@@ -34,6 +34,8 @@ jobs:
           for item in ${changed_values}; do
             chart=$(echo $item | cut -d '/' -f1)
             old_chart_version=$(yq '.version' $chart/Chart.yaml)
+            pwd
+            ls -l         
             yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$NF++;print}' OFS=.) $chart/Chart.yaml
             image_tag = $(yq .images.tag $item)
             yq -i '.appVersion' = $image.tag $chart/Chart.yaml
@@ -45,6 +47,8 @@ jobs:
 
           for item in ${changed_charts}; do
             old_chart_version=$(yq '.version' $item/Chart.yaml)
+            pwd
+            ls -l
             yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.) $chart/Chart.yaml
             helm package $chart
           done
