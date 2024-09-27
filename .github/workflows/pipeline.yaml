@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - '**/templates'
-      - '**/values'
+      - 'v49/*'
+      - 'v50/*'
+      - 'v51/*'
 
 jobs:
   build:
