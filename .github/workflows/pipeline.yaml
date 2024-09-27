@@ -36,7 +36,7 @@ jobs:
             old_chart_version=$(yq '.version' $chart/Chart.yaml)
             new_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
             yq -i '.version = "$new_version"' $chart/Chart.yaml
-            image_tag = $(yq .image.tag $item)
+            image_tag=$(yq .image.tag $item)
             yq -i '.appVersion = "$image_tag"' $chart/Chart.yaml
 
             if [ -z $(echo "$changed_charts" | grep $chart) ]; then
