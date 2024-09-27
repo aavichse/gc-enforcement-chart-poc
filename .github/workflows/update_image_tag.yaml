@@ -20,7 +20,8 @@ jobs:
         shell: bash
         run: | 
           chart_versions_list=$(ls -d */ | cut -f1 -d'/')
-          version="${${{inputs.image_tag}}#[vV]}"
+          tag=${{ inputs.image_tag }}
+          version="${tag#[vV]}"
           chart_version="${version%%.*}"
           validate=$(echo "$chart_versions_list" | grep "$chart_version")
           if ! [ -z "$validate" ]; then           
