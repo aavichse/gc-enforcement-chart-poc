@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: update image tag
+        shell: bash
         run: | 
           chart_versions_list=$(ls -d */ | cut -f1 -d'/')
           version="${${{inputs.image_tag}}#[vV]}"
