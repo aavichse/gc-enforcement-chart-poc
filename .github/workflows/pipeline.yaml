@@ -50,7 +50,8 @@ jobs:
             yq -i ".version = \"$new_chart_version\"" $chart/Chart.yaml
             helm package $chart
           done
-          helm repo index --merge index.yaml
+          helm repo index --merge index.yaml .
+          cat index.yaml
           git config --global user.name 'github actions'
           git config --global user.email 'gha@users.noreply.github.com'
           git commit -am "Updated charts appversion & versoin"
