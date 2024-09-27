@@ -37,7 +37,7 @@ jobs:
             image_tag = $(yq .images.tag $item)
             yq -i '.appVersion' = $image.tag $chart/Chart.yaml
 
-            if [ -z $(echo "$changed_charts" | grep $chart) ];
+            if [ -z $(echo "$changed_charts" | grep $chart) ]; then
               helm package $chart
             fi
           done
