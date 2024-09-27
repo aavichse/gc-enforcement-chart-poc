@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +22,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44
 
-      - name: Package and push helm charts
+      - name: Prepare helm charts
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
@@ -40,7 +40,7 @@ jobs:
             yq -i ".appVersion = \"$image_tag\"" $chart/Chart.yaml
 
             if [ -z $(echo "$changed_charts" | grep $chart) ]; then
-              helm package $chart
+              helm package $chart -d releases/
             fi
           done
 
@@ -48,11 +48,17 @@ jobs:
             old_chart_version=$(yq '.version' $item/Chart.yaml)
             new_chart_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.)
             yq -i ".version = \"$new_chart_version\"" $chart/Chart.yaml
-            helm package $chart
+            helm package $chart -d releases/
           done
           helm repo index --merge index.yaml .
           cat index.yaml
           git config --global user.name 'github actions'
-          git config --global user.email 'gha@users.noreply.github.com'
+          git config --global user.email 'gha@users.noreply.github.com'          
           git commit -am "Updated charts appversion & versoin"
           git push
+
+      - name: Publish Helm charts
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          charts_dir: releases
