@@ -28,7 +28,7 @@ jobs:
             yq -i '.image.tag = "${{ inputs.image_tag}}"' $validate/values.yaml
             git config --global user.name 'github actions'
             git config --global user.email 'gha@users.noreply.github.com'
-            git commit -am "Updated $chart_version with ${{ inputs.image_tag }}"
+            git commit -am "Updated ${validate} with ${{ inputs.image_tag }}"
             git push
           else
             echo "${{ inputs.image_tag }} doesn't match available chart versions: $chart_versions_list" 
