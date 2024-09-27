@@ -25,7 +25,7 @@ jobs:
           chart_version="${version%%.*}"
           validate=$(echo "$chart_versions_list" | grep "$chart_version")
           if ! [ -z "$validate" ]; then           
-            yq -i '.image.tag = "${{ inputs.image_tag}}"' $chart_version/values.yaml
+            yq -i '.image.tag = "${{ inputs.image_tag}}"' $validate/values.yaml
             git config --global user.name 'github actions'
             git config --global user.email 'gha@users.noreply.github.com'
             git commit -am "Updated $chart_version with ${{ inputs.image_tag }}"
