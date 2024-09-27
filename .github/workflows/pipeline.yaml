@@ -26,6 +26,10 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          values=$(echo $ALL_CHANGED_FILES)
+          changed=$(echo $ALL_CHANGED_FILES | sort | uniq )
+          for item in ${changed}; do
+            echo "$item"
+          done
+
 
 
