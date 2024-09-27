@@ -26,9 +26,20 @@ jobs:
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          changed=$(echo $ALL_CHANGED_FILES | sort | uniq )
+          changed_charts=$(echo $ALL_CHANGED_FILES | cut -d '/' -f1 | sort | uniq )
           for item in ${changed}; do
-            echo "$item"
+            chart=$(echo $item | cut -d '/' -f1)
+            old_chart_version=$(yq '.version' $chart/Chart.yaml)
+            if [[  $item =~ "values.yaml" ]]; then
+              yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$NF++;print}' OFS=.) $chart/Chart.yaml
+              image_tag = $(yq .images.tag $item)
+              yq -i '.appVersion' = $image.tag $chart/Chart.yaml
+            fi 
+            if [[ $item =~ "templates" ]]; then
+              yq -i '.version' = $(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.) $chart/Chart.yaml
+            fi
+            helm package $chart
+          helm repo index --merge index.yaml
           done
 
 
