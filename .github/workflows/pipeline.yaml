@@ -40,7 +40,7 @@ jobs:
             yq -i ".appVersion = \"$image_tag\"" $chart/Chart.yaml
 
             if [ -z $(echo "$changed_charts" | grep $chart) ]; then
-              helm package $chart -d releases/
+              helm package $chart
             fi
           done
 
@@ -48,17 +48,15 @@ jobs:
             old_chart_version=$(yq '.version' $item/Chart.yaml)
             new_chart_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.)
             yq -i ".version = \"$new_chart_version\"" $chart/Chart.yaml
-            helm package $chart -d releases/
+            helm package $chart
           done
-          helm repo index --merge index.yaml .
-          cat index.yaml
+          git checkout gh-pages
+          mv *.tar.gz docs/
+          helm repo index --merge docs/index.yaml .
+          mv index.yaml docs/index.yaml
+          ls docs/
+          cat docs/index.yaml
           git config --global user.name 'github actions'
-          git config --global user.email 'gha@users.noreply.github.com'          
+          git config --global user.email 'gha@users.noreply.github.com'
           git commit -am "Updated charts appversion & versoin"
           git push
-
-      - name: Publish Helm charts
-        uses: stefanprodan/helm-gh-pages@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          charts_dir: releases
