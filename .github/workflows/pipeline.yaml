@@ -1,7 +1,12 @@
 name: Bump chart versions
 
 on:
-
+  push:
+    branch:
+    - main
+    paths:
+    - 'charts/**'
+    - '!charts/**/Chart.yaml'
 
 
 jobs:
