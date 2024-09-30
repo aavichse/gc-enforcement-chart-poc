@@ -29,7 +29,7 @@ jobs:
         run: |
           set -x
           changed=$(echo $ALL_CHANGED_FILES | tr ' ' '\n')
-          changed_values=$(echo "$changed" | grep "values.yaml")
+          changed_values=$(echo "$changed" | grep "values.yaml" | cat)
           changed_charts=$(echo "$changed" | grep "templates" | cut -d '/' -f1 | sort | uniq)
 
           for item in ${changed_values}; do
@@ -46,7 +46,7 @@ jobs:
             new_chart_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.)
             yq -i ".version = \"$new_chart_version\"" $chart/Chart.yaml
           done
-          
+
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git commit -am "Updated charts appversion & version"
