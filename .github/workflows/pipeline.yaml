@@ -44,7 +44,7 @@ jobs:
           for item in ${changed_charts}; do
             old_chart_version=$(yq '.version' $item/Chart.yaml)
             new_chart_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.)
-            yq -i ".version = \"$new_chart_version\"" $chart/Chart.yaml
+            yq -i ".version = \"$new_chart_version\"" $item/Chart.yaml
           done
 
           git config user.name "$GITHUB_ACTOR"
