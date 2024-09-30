@@ -18,6 +18,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.OPSFLEET }}
+          persist-credentials: true
 
       - name: Get changed files
         id: changed-files
@@ -50,4 +53,9 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git commit -am "Updated charts appversion & version"
-          git push
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          ssh: true
+          branch: ${{ github.ref }}
