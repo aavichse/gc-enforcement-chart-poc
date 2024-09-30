@@ -3,8 +3,11 @@ name: Bump chart versions
 on:
   workflow_dispatch:
   push:
+    branch:
+    - main
     paths:
-      - 'charts/*'
+    - 'charts/**'
+    - '!charts/**/Chart.yaml'
 
 jobs:
   build:
