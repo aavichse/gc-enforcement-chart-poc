@@ -33,7 +33,7 @@ jobs:
           changed_charts=$(echo "$changed" | grep "templates" | cut -d '/' -f1 | sort | uniq)
 
           for item in ${changed_values}; do
-            chart=$(echo $item | cut -d '/' -f1)
+            chart=$(dirname $item)
             old_chart_version=$(yq '.version' $chart/Chart.yaml)
             new_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$NF++;print}' OFS=.)
             yq -i ".version = \"$new_version\"" $chart/Chart.yaml
