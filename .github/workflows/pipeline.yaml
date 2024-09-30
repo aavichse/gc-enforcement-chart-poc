@@ -30,7 +30,7 @@ jobs:
           set -x
           changed=$(echo $ALL_CHANGED_FILES | tr ' ' '\n')
           changed_values=$(echo "$changed" | grep "values.yaml" | cat)
-          changed_charts=$(echo "$changed" | grep "templates" | cut -d '/' -f1 | sort | uniq)
+          changed_charts=$(echo "$changed" | grep "templates" | cut -d '/' -f1,2 | sort | uniq)
 
           for item in ${changed_values}; do
             chart=$(dirname $item)
