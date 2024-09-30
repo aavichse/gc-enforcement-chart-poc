@@ -46,6 +46,7 @@ jobs:
             new_chart_version=$(echo $old_chart_version |  awk -F. '/[0-9]+\./{$(NF-1)++;print}' OFS=.)
             yq -i ".version = \"$new_chart_version\"" $chart/Chart.yaml
           done
+          
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git commit -am "Updated charts appversion & version"
