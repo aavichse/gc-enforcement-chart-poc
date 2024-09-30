@@ -15,6 +15,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.OPSFLEET }}
+          persist-credentials: true
 
       - name: update image tag
         shell: bash
@@ -29,8 +32,13 @@ jobs:
             git config --global user.name 'github actions'
             git config --global user.email 'gha@users.noreply.github.com'
             git commit -am "Updated ${validate} with ${{ inputs.image_tag }}"
-            git push
           else
             echo "${{ inputs.image_tag }} doesn't match available chart versions: $chart_versions_list" 
             exit 1
           fi
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          ssh: true
+          branch: ${{ github.ref }}
