@@ -19,13 +19,13 @@ jobs:
       - name: update image tag
         shell: bash
         run: | 
-          chart_versions_list=$(ls -d */ | cut -f1 -d'/')
+          chart_versions_list=$(ls charts)
           tag=${{ inputs.image_tag }}
           version="${tag#[vV]}"
           chart_version="${version%%.*}"
           validate=$(echo "$chart_versions_list" | grep "$chart_version")
           if ! [ -z "$validate" ]; then           
-            yq -i '.image.tag = "${{ inputs.image_tag}}"' $validate/values.yaml
+            yq -i '.image.tag = "${{ inputs.image_tag}}"' charts/$validate/values.yaml
             git config --global user.name 'github actions'
             git config --global user.email 'gha@users.noreply.github.com'
             git commit -am "Updated ${validate} with ${{ inputs.image_tag }}"
