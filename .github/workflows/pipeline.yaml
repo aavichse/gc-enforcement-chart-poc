@@ -1,7 +1,6 @@
 name: Bump chart versions
 
 on:
-  workflow_dispatch:
   push:
     branch:
     - main
