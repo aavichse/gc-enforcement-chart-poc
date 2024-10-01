@@ -22,6 +22,16 @@ entries:
     - https://github.com/aavichse/gc-enforcement-chart-poc/releases/download/poc-chart-51.0.1/poc-chart-51.0.1.tgz
     version: 51.0.1
   - apiVersion: v2
+    appVersion: v50.000.001
+    created: "2024-10-01T10:30:59.747330495Z"
+    description: A Helm chart for Kubernetes
+    digest: f40960e91f277b9d44318936a4ead63ad53d91bfbc58e272c0d854a18983cedb
+    name: poc-chart
+    type: application
+    urls:
+    - https://github.com/aavichse/gc-enforcement-chart-poc/releases/download/poc-chart-50.0.1/poc-chart-50.0.1.tgz
+    version: 50.0.1
+  - apiVersion: v2
     appVersion: v49.000.001
     created: "2024-10-01T10:24:25.108286983Z"
     description: A Helm chart for Kubernetes
@@ -31,4 +41,4 @@ entries:
     urls:
     - https://github.com/aavichse/gc-enforcement-chart-poc/releases/download/poc-chart-49.0.1/poc-chart-49.0.1.tgz
     version: 49.0.1
-generated: "2024-10-01T10:24:25.108303414Z"
+generated: "2024-10-01T10:30:59.747352206Z"
